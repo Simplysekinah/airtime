@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div style="display: flex;">
+            <select id="network">
+                <option value="">choose network</option>
+                <option value="MTN">MTN</option>
+                <option value="AIRTEL">AIRTEL</option>
+                <option value="GLO">GLO</option>
+                <option value="9MOBILE">9MOBILE</option>
+            </select>
+            <select id="amount">
+                <option value="">Amount</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+            </select>
+        </div>
+        <button onclick="Show()">Click</button>
+        <h1 id="pin"></h1>
+        <input type="text" id="contain">
+        <button onclick="Load()">Load</button>
+    </div>
+</body>
+</html>
+<script>
+    let network = document.getElementById('network')
+    let amount = document.getElementById('amount')
+    let pin = document.getElementById('pin')
+    let contain = document.getElementById('contain')
+    let rand = '';
+    let airtimearr = JSON.parse(localStorage.getItem('Airtimes'))||[]
+    for (let index = 0; index < 15; index++) {
+        const element = Math.floor(Math.random()*10);
+        console.log(element);
+        rand += element
+    }
+    console.log(rand);
+    // let rand =Math.floor(Math.random()*1000000000000000)
+    // console.log(rand);
+    function Show() {
+        console.log(network.value ,amount.value);
+        if(network.value =='' || amount.value ==''){
+            alert('are you a thief')
+            console.log(network.value ,amount.value);
+        }else{
+            pin.innerHTML = rand
+            let details={
+                network : network.value,
+                amount: amount.value,
+                Pin:pin.innerHTML,
+                isUsed: false
+            }
+            airtimearr.push(details)
+            console.log(airtimearr);
+            localStorage.setItem('Airtimes',JSON.stringify(airtimearr))
+        }
+    }
+    function Load() {
+        console.log(contain.value);
+       let pins = contain.value.slice(5,20)
+       console.log(pins);
+       let index= airtimearr.findIndex(el=>el.Pin === pins)
+       console.log(index);
+       console.log(airtimearr[index]);
+       let airt = airtimearr[index]
+        if(airt.isUsed == true){
+            alert('This card has been used')
+        }else if(contain.value.startsWith('*311*') && contain.value.includes(rand) && contain.value.endsWith('#')){
+            console.log('sekinat');
+               alert(`You have successfully recharge ${network.value} card of${amount.value} `)
+               let airtobj = {
+                pin:airt.Pin,
+                amount:airt.amount,
+                isUsed:true,
+                network:airt.network
+               }
+               airtimearr[index] = airtobj
+            console.log(airtimearr);
+            localStorage.setItem('Airtimes',JSON.stringify(airtimearr))
+        }
+        else{
+            alert('wsedrf')
+        }
+        // else{
+        //     alert('sedrtfgyuhjk')
+        // }
+    }
+</script>
